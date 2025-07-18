@@ -7,13 +7,25 @@ import { useEffect, useState } from "react";
 const App = () => {
   // 🔹 Random Name Generator
   const [name, setName] = useState("Generate");
+  const [count, setCount] = useState(0);
+  const [newItem, setNewItem] = useState("");
+  const [search, setSearch] = useState("");
+  // Error Handling on Todo List
+  const [fetchError, setFetchError] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const [colorValue, setColorValue] = useState("");
+  const [hexValue, SetHexValue] = useState("");
+  const [isDarkText, setIsDarkText] = useState(true);
+
+  const API_URL = "http://localhost:3000/item";
+
   const handleNameChange = () => {
     const names = ["Grow", "Earn", "Achieve", "Create", "Improve"];
     const index = Math.floor(Math.random() * names.length);
     setName(names[index]);
   };
   // 🔹 Counter Section
-  const [count, setCount] = useState(0);
   const increment = () => setCount((prev) => prev + 1);
   const decrement = () => setCount((prev) => prev - 1);
   // 🔹 To-Do App State
@@ -26,21 +38,27 @@ const App = () => {
     }
   });
   // Todo List
-  const API_URL = "http://localhost:3000/item";
-  const [newItem, setNewItem] = useState("");
+
   useEffect(() => {
     const fetchItems = async () => {
       try {
+        setIsLoading(true);
         const response = await fetch(API_URL);
         if (!response.ok) throw new Error("Data fetch failed");
         const listItems = await response.json();
         setItems(listItems);
+        setFetchError(null);
       } catch (err) {
-        console.error("Error fetching items:", err.message);
+        setFetchError(err.message);
+      } finally {
+        setIsLoading(false);
       }
     };
-    fetchItems();
+    setTimeout(() => {
+      fetchItems();
+    }, 2000);
   }, []);
+
   // 🔹 Add Item
   const addItem = (item) => {
     const id = items.length ? items[items.length - 1].id + 1 : 1;
@@ -66,48 +84,47 @@ const App = () => {
   const handleDelete = (id) => {
     setItems((prevItems) => prevItems.filter((item) => item.id !== id));
   };
-  // 🔹 Save to localStorage when `items` changes
-
-  const [search, setSearch] = useState("");
-  // Color Change
-  const [colorValue, setColorValue] = useState("");
-  const [hexValue, SetHexValue] = useState("");
-  const [isDarkText, setIsDarkText] = useState(true);
-
   return (
     <div>
       <Header title="Vanakkam da maapla theni la irundhu" />
 
-      {/* 👇 Now Content receives AddItem props too */}
-      <Content
-        // Name Generator
-        name={name}
-        handleNameChange={handleNameChange}
-        // Counter
-        count={count}
-        increment={increment}
-        decrement={decrement}
-        // Todo App
-        title="📆 Plan Your Day, One Task at a Time"
-        items={items.filter((item) =>
-          item.item.toLowerCase().includes(search.toLocaleLowerCase())
-        )}
-        handleCheck={handleCheck}
-        handleDelete={handleDelete}
-        // Add Item
-        newItem={newItem}
-        setNewItem={setNewItem}
-        handleSubmit={handleSubmit}
-        // Search Item
-        search={search}
-        setSearch={setSearch}
-        // Color Change
-        colorValue={colorValue}
-        hexValue={hexValue}
-        isDarkText={isDarkText}
-        setColorValue={setColorValue}
-        setIsDarkText={setIsDarkText}
-      />
+      <main>
+        <p className="text-center">{isLoading}</p>
+        {fetchError && <p className="text-center">{`Error: ${fetchError}`}</p>}
+
+        <Content
+          // Name Generator
+          name={name}
+          handleNameChange={handleNameChange}
+          // Counter
+          count={count}
+          increment={increment}
+          decrement={decrement}
+          // Todo App
+          title="📆 Plan Your Day, One Task at a Time"
+          items={items.filter((item) =>
+            item.item.toLowerCase().includes(search.toLocaleLowerCase())
+          )}
+          handleCheck={handleCheck}
+          handleDelete={handleDelete}
+          // Add Item
+          newItem={newItem}
+          setNewItem={setNewItem}
+          handleSubmit={handleSubmit}
+          // Search Item
+          search={search}
+          setSearch={setSearch}
+          // Error handling on Todo List
+          fetchError={fetchError}
+          setFetchError={setFetchError}
+          // Color Change
+          colorValue={colorValue}
+          hexValue={hexValue}
+          isDarkText={isDarkText}
+          setColorValue={setColorValue}
+          setIsDarkText={setIsDarkText}
+        />
+      </main>
 
       <Footer />
     </div>
