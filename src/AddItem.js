@@ -1,6 +1,8 @@
 import { FaPlus } from "react-icons/fa";
+import { useRef } from "react";
 
 const AddItem = ({ newItem, setNewItem, handleSubmit }) => {
+  const inputRef = useRef();
   return (
     <form
       className="flex flex-col sm:flex-row gap-2 sm:gap-0 mb-4"
@@ -8,6 +10,7 @@ const AddItem = ({ newItem, setNewItem, handleSubmit }) => {
     >
       <input
         autoFocus
+        ref={inputRef}
         type="text"
         id="addItem"
         placeholder="Add a new task..."
@@ -18,6 +21,7 @@ const AddItem = ({ newItem, setNewItem, handleSubmit }) => {
       />
       <button
         type="submit"
+        onClick={() => inputRef.current.focus()}
         className="w-full sm:w-auto bg-white text-blue-600 px-4 py-2 rounded sm:rounded-r-lg sm:rounded-l-none hover:bg-rose-500 hover:text-white transition-colors"
         aria-label="Add Item"
       >

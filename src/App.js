@@ -25,7 +25,22 @@ const App = () => {
       return [];
     }
   });
+  // Todo List
+  const API_URL = "http://localhost:3000/item";
   const [newItem, setNewItem] = useState("");
+  useEffect(() => {
+    const fetchItems = async () => {
+      try {
+        const response = await fetch(API_URL);
+        if (!response.ok) throw new Error("Data fetch failed");
+        const listItems = await response.json();
+        setItems(listItems);
+      } catch (err) {
+        console.error("Error fetching items:", err.message);
+      }
+    };
+    fetchItems();
+  }, []);
   // 🔹 Add Item
   const addItem = (item) => {
     const id = items.length ? items[items.length - 1].id + 1 : 1;
@@ -52,9 +67,7 @@ const App = () => {
     setItems((prevItems) => prevItems.filter((item) => item.id !== id));
   };
   // 🔹 Save to localStorage when `items` changes
-  useEffect(() => {
-    localStorage.setItem("todo_list", JSON.stringify(items));
-  }, [items]);
+
   const [search, setSearch] = useState("");
   // Color Change
   const [colorValue, setColorValue] = useState("");

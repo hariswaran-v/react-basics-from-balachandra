@@ -1,0 +1,24 @@
+{
+  "item": [
+    {
+      "id": 1,
+      "checked": false,
+      "item": "Learn about Redux"
+    },
+    {
+      "id": 2,
+      "checked": false,
+      "item": "Practice React useState"
+    },
+    {
+      "id": 3,
+      "checked": false,
+      "item": "Understand useEffect in depth"
+    },
+    {
+      "id": 4,
+      "checked": false,
+      "item": "Build a To-Do App with Redux"
+    }
+  ]
+}
