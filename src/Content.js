@@ -72,7 +72,7 @@ const Content = ({
             </div>
           </div>
           {/* Color Change */}
-          <div className="bg-gray-300 shadow-md p-6 rounded-lg flex flex-col items-center justify-center text-center space-y-6">
+          <div className="bg-gray-300  shadow-md p-6 rounded-lg flex flex-col items-center justify-center text-center space-y-6">
             <Square
               colorValue={colorValue}
               hexValue={hexValue}

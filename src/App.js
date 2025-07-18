@@ -1,8 +1,6 @@
 import Content from "./Content";
 import Footer from "./Footer";
 import Header from "./Header";
-import Square from "./Square";
-import Input from "./Input";
 
 import { useEffect, useState } from "react";
 
