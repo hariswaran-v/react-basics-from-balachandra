@@ -19,7 +19,7 @@ const App = () => {
   const [hexValue, SetHexValue] = useState("");
   const [isDarkText, setIsDarkText] = useState(true);
 
-  const API_URL = "http://localhost:3000/item";
+  const API_URL = "http://localhost:3000/items";
 
   const handleNameChange = () => {
     const names = ["Grow", "Earn", "Achieve", "Create", "Improve"];
@@ -39,7 +39,6 @@ const App = () => {
     }
   });
   // Todo List
-
   useEffect(() => {
     const fetchItems = async () => {
       try {
@@ -78,6 +77,7 @@ const App = () => {
     const result = await apiRequest(API_URL, postOptions);
     if (result) setFetchError(result);
   };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!newItem.trim()) return; // avoid empty tasks
@@ -85,16 +85,34 @@ const App = () => {
     setNewItem("");
   };
   // 🔹 Toggle Check
-  const handleCheck = (id) => {
-    setItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === id ? { ...item, checked: !item.checked } : item
-      )
+  const handleCheck = async (id) => {
+    const listItems = items.map((item) =>
+      item.id == id ? { ...item, checked: !item.checked } : item
     );
+    setItems(listItems);
+
+    const myItem = listItems.find((item) => item.id == id);
+
+    const updateOption = {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ checked: myItem.checked }),
+    };
+
+    const reqUrl = `${API_URL}/${id}`;
+    const result = await apiRequest(reqUrl, updateOption);
+    if (result) setFetchError(result);
   };
+
   // 🔹 Delete Item
   const handleDelete = (id) => {
     setItems((prevItems) => prevItems.filter((item) => item.id !== id));
+
+    const deleteOption = { method: "DELETE" };
+
+    const reqUrl = `${API_URL}/${id}`;
+    const result = apiRequest(reqUrl, deleteOption);
+    if (result) setFetchError(result);
   };
   return (
     <div>
@@ -115,7 +133,7 @@ const App = () => {
           // Todo App
           title="📆 Plan Your Day, One Task at a Time"
           items={items.filter((item) =>
-            item.item.toLowerCase().includes(search.toLocaleLowerCase())
+            item.item?.toLowerCase().includes(search.toLowerCase())
           )}
           handleCheck={handleCheck}
           handleDelete={handleDelete}
